@@ -1,19 +1,19 @@
-import { PlayerResource } from "../scapers/playerResource";
+import { PlayerData, PlayerResource } from "../scapers/playerResource";
 import { ClubTable } from "./ClubTable";
+import { ITable } from "./ITable";
 
-export class PlayerTable {
-    players: Promise<PlayerResource[]>;
+export class PlayerTable implements ITable<PlayerResource, PlayerData> {
+    data: Promise<PlayerResource[]>;
   
     constructor(ids: Promise<string[]>) {
-        console.log("pt")
-      this.players = ids.then(res => res.map(id => new PlayerResource(id)))
+        this.data = ids.then(res => res.map(id => new PlayerResource(id)))
     }
   
     getClubs(season?: number): ClubTable {
 
         const getIds = async () => {
             const outId: string[] = []
-            const _players = await this.players
+            const _players = await this.data
 
             for (let i=0; i<_players.length; i++) {
                 if (!_players[i].scraped)
@@ -32,8 +32,8 @@ export class PlayerTable {
 
     }
   
-    async csv(): Promise<string> {
-        const _ids: string[] = (await this.players).map(p => p.id)
+    async getCsv(): Promise<string> {
+        const _ids: string[] = (await this.data).map(p => p.id)
         const promises = _ids.map(pId => new PlayerResource(pId)).map(async (t) => await t.csv());
         const tt = await Promise.all(promises);
         const res = `name, birthday, place of birt, citizenship, position, foot, id\n${tt.join(
@@ -43,6 +43,14 @@ export class PlayerTable {
         console.log("zzzz")
     
         return res;
+    }
+
+    async getData(): Promise<PlayerData[]> {
+        return this.data.then(res => res.map(x => x.data))
+    }
+    
+    async getId(): Promise<string[]> {
+        return this.data.then(res => res.map(p => p.id))
     }
   
     //   value(): number[] {

@@ -1,11 +1,12 @@
-import { ClubResource } from "../scapers/clubResource";
+import { ClubData, ClubResource } from "../scapers/clubResource";
+import { ITable } from "./ITable";
 import { PlayerTable } from "./PlayerTable";
 
-export class ClubTable {
-    clubs: Promise<ClubResource[]>;
+export class ClubTable implements ITable<ClubResource, ClubData>{
+    data: Promise<ClubResource[]>;
   
     constructor(ids: Promise<string[]>) {
-      this.clubs = ids.then(res => res.map(id => new ClubResource(id)))
+      this.data = ids.then(res => res.map(id => new ClubResource(id)))
     }
   
     getPlayers(season?: string): PlayerTable {
@@ -23,17 +24,25 @@ export class ClubTable {
         return ids
       }
 
-      const ids: Promise<string[]> = getIds(this.clubs)
+      const ids: Promise<string[]> = getIds(this.data)
       return new PlayerTable(ids);
     }
   
-    async csv(): Promise<string> {
-      const promises = (await this.clubs).map(async (t) => await t.csv());
+    async getCsv(): Promise<string> {
+      const promises = (await this.data).map(async (t) => await t.csv());
       const tt = await Promise.all(promises);
       const res = `name, squadSize, avgAge, foreigners, nationalPlayers, stadium\n${tt.join(
         "\n"
       )}`;
   
       return res;
+    }
+
+    getId(): Promise<string[]> {
+      return this.data.then(res => res.map(x => x.id))
+    }
+
+    getData(): Promise<ClubData[]> {
+      return this.data.then(res => res.map(x => x.data))
     }
   }
