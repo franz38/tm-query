@@ -1,4 +1,4 @@
-import { ClubData, ClubResource } from "../scapers/clubResource";
+import { ClubData, ClubResource } from "../scapers/club";
 import { ITable } from "./ITable";
 import { PlayerTable } from "./PlayerTable";
 

@@ -1,4 +1,4 @@
-import { ClubResource } from "./clubResource";
+import { ClubResource } from "./club";
 import {parse} from "node-html-parser";
 import { Scrapable } from "./resource";
 

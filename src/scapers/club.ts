@@ -1,5 +1,5 @@
-import { PlayerResource } from "./playerResource";
-import {parse} from "node-html-parser";
+import { PlayerResource } from "./player";
+import {parse, HTMLElement} from "node-html-parser";
 import { Scrapable } from "./resource";
 
 
@@ -77,24 +77,31 @@ export const scrapeClub = async (clubId: string, season?: string): Promise<ClubD
             else return null;
         });
 
-    const info = root.querySelectorAll(".data-header__label").map((v) => {
-        const span = v.querySelector("span");
+    const d: {[id: string]: string} = root.querySelectorAll(".data-header__label")
+        .reduce((old: {[id: string]: string}, v: HTMLElement) => {
+          const span = v.querySelector(".data-header__content");
+          
+          let value = ""
+          if (span?.querySelector("a"))
+            value = span?.querySelector("a")?.innerText.trim() ?? ""
+          else 
+            value = span?.innerText.trim() ?? ""
 
-        if (span?.querySelector("a"))
-        return span?.querySelector("a")?.innerText.trim();
-        return span?.innerText.trim();
-    }) as string[];
+          span?.remove()
+          const key = v?.innerText.trim().toLowerCase().replace(":", "")
 
-    console.info(`scraped club: ${clubId}/${seasonQuery}`)
+          old[key] = value    
+          return old
+    }, {})
 
     const data: ClubData = {
         name: root.querySelector("h1.data-header__headline-wrapper")
             ?.innerText.trim() ?? "",
-        squadSize: +info[3],
-        avgAge: +info[4],
-        foreigners: +info[5],
-        ntPlayers: +info[6],
-        stadium: info[7],
+        squadSize: +d["squad size"],
+        avgAge: +d["average age"],
+        foreigners: +d["foreigners"],
+        ntPlayers: +d["national team players"],
+        stadium: d["stadium"],
         currentTr: -1,
         players: rows as string[]
     }

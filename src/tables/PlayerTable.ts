@@ -1,4 +1,4 @@
-import { PlayerData, PlayerResource } from "../scapers/playerResource";
+import { PlayerData, PlayerResource } from "../scapers/player";
 import { ClubTable } from "./ClubTable";
 import { ITable } from "./ITable";
 
@@ -39,8 +39,6 @@ export class PlayerTable implements ITable<PlayerResource, PlayerData> {
         const res = `name, birthday, place of birt, citizenship, position, foot, id\n${tt.join(
             "\n"
         )}`;
-
-        console.log("zzzz")
     
         return res;
     }
