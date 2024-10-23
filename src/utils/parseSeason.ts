@@ -1,8 +1,11 @@
 
-export const parseSeason = (raw_season: string): number => {
+export const parseSeason = (raw_season?: string): string|undefined => {
+
+    if (!raw_season)
+        return undefined
 
     if (+raw_season)
-        return +raw_season
+        return raw_season
 
     if (raw_season.includes("/"))
         return parseSeason(raw_season.split("/")[0])
