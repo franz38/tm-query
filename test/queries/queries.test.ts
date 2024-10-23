@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import { TMQuery } from "../../src/query";
 
+test("search clubs", async () => {
+    const id1 = await TMQuery.searchClub("juventus").getId();
+    expect(id1[0]).toBe("/juventus-turin/startseite/verein/506");
+
+    const id2 = await TMQuery.searchClub("ajax").getId();
+    expect(id2[0]).toBe("/ajax-amsterdam/startseite/verein/610");
+
+    const id3 = await TMQuery.searchClub("inter").getId();
+    expect(id3[0]).toBe("/inter-mailand/startseite/verein/46");
+});
+
 test('search "barcelona"', async () => {
   const players = await TMQuery.searchClub("barcelona").getCsv();
   expect(players.split("\n")[0]).toBe(
@@ -23,7 +34,7 @@ test('search "juventus" and get players from 1985', async () => {
     "Stefano Tacconi, May 13, 1957 (67), Italy, Italy, Goalkeeper, right, /stefano-tacconi/profil/spieler/118257"
   );
   expect(players.split("\n")[11]).toBe(
-    "Aldo Dolcetti, Oct 23, 1966 (57), Italy, Italy, Midfield, Retired, /aldo-dolcetti/profil/spieler/226443"
+    "Aldo Dolcetti, Oct 23, 1966 (58), Italy, Italy, Midfield, Retired, /aldo-dolcetti/profil/spieler/226443"
   );
   expect(players.split("\n").length).toBe(21);
 });
