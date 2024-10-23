@@ -40,13 +40,14 @@ export class CompetitionResource implements Scrapable {
 
 
 export const scrapeCompetition = async (competitionId: string, season?: string): Promise<CompetitionData> => {
+
     const res = await fetch(`https://www.transfermarkt.com${competitionId}`);
     const soup = await res.text();
     const root = parse(soup);
 
     const box = getBox(root, "clubs")
     const rows = box.querySelector("table.items")?.querySelector("tbody")?.querySelectorAll("tr")
-    const clubsIds = rows?.map(row => row.querySelectorAll("td")[1].querySelector("a")?.innerText.trim()) as string[]
+    const clubsIds = rows?.map(row => row.querySelectorAll("td")[1].querySelector("a")?.getAttribute("href")) as string[]
 
     const info = getHeadInfo(root)
     const totalMarketValueBox = root.querySelector(".data-header__market-value-wrapper")
@@ -65,7 +66,7 @@ export const scrapeCompetition = async (competitionId: string, season?: string):
             return span.innerText
         })
         .map(s => s?.trim()) as string[]
-    
+
     return {
         clubs: clubsIds,
         numberOfTeams: info[0],
