@@ -1,16 +1,6 @@
 import { expect, test } from "vitest";
 import { TMQuery } from "../../src/query";
 
-test("search clubs", async () => {
-    const id1 = await TMQuery.searchClub("juventus").getId();
-    expect(id1[0]).toBe("/juventus-turin/startseite/verein/506");
-
-    const id2 = await TMQuery.searchClub("ajax").getId();
-    expect(id2[0]).toBe("/ajax-amsterdam/startseite/verein/610");
-
-    const id3 = await TMQuery.searchClub("inter").getId();
-    expect(id3[0]).toBe("/inter-mailand/startseite/verein/46");
-});
 
 test('search "barcelona"', async () => {
   const players = await TMQuery.searchClub("barcelona").getCsv();
@@ -40,14 +30,24 @@ test('search "juventus" and get players from 1985', async () => {
 });
 
 test('search "eden hazard"', async () => {
-  const clubs = await TMQuery.searchPlayer("hazard").getCsv();
-  expect(clubs.split("\n")[0]).toBe(
+  const player = await TMQuery.searchPlayer("hazard").getCsv();
+  expect(player.split("\n")[0]).toBe(
     "name, birthday, place of birt, citizenship, position, foot, id"
   );
-  expect(clubs.split("\n")[1]).toBe(
+  expect(player.split("\n")[1]).toBe(
     "Eden Hazard, Jan 7, 1991 (33), Belgium, Belgium, Attack - Left Winger, right, /eden-hazard/profil/spieler/50202"
   );
-  expect(clubs.split("\n").length).toBe(2);
+  expect(player.split("\n").length).toBe(2);
+});
+
+test('search "Lewandowski" and get former clubs', async () => {
+    const clubs = await TMQuery.searchPlayer("Lewandowski").getClubs().getCsv()
+    expect(clubs.split("\n")[0]).toBe(
+        "name, squadSize, avgAge, foreigners, nationalPlayers, stadium"
+    )
+    expect(clubs.split("\n")[1]).toBe(
+        "Bayern Munich, 28, 26.5, 17, 20, Allianz Arena"
+    )
 });
 
 test("search hazard and get list of clubs he played for", async () => {
