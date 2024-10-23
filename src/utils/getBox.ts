@@ -3,7 +3,7 @@ import {HTMLElement} from "node-html-parser";
 export const getBox = (root: HTMLElement, query: string): HTMLElement => {
     let myBox = root
       .querySelectorAll(".box")
-      .filter(
+      .find(
         (box) =>
           box.querySelector(".content-box-headline") &&
           box
@@ -11,5 +11,9 @@ export const getBox = (root: HTMLElement, query: string): HTMLElement => {
             ?.innerText.toLowerCase()
             .includes(query)
       );
-    return myBox[0]
+    
+    if (!myBox)
+      throw new Error("Cant find search results")
+    
+    return myBox
 }

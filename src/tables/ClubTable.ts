@@ -8,6 +8,10 @@ export class ClubTable implements ITable<ClubResource, ClubData>{
     constructor(ids: Promise<string[]>) {
       this.data = ids.then(res => res.map(id => new ClubResource(id)))
     }
+
+    count(): Promise<number> {
+      return this.data.then(res => res.length)
+    }
   
     getPlayers(season?: string): PlayerTable {
       

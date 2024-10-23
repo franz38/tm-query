@@ -10,18 +10,20 @@ export const search = (query: string, header: string): Promise<string[]> => {
       const soup = await res.text();
       const root = parse(soup);
 
-      const box = getBox(root, "players");
+      const box = getBox(root, header);
 
       const rows = box
         ?.querySelector("tbody")
         ?.querySelectorAll("tr") as HTMLElement[];
 
-      const playerId =
-        rows[0]
-          .querySelectorAll("tr")[0]
-          .querySelectorAll("a")
-          .map((a) => a?.getAttribute("href") as string)
-          .find((v) => v !== "#") ?? "";
+      const td = rows[0].querySelectorAll("td")
+        .find(
+          td => td.querySelectorAll("a").length > 0 && 
+          td.querySelectorAll("a")?.some(a => a.getAttribute("href") != "#")
+        )
+
+      const playerId = td?.querySelectorAll("a")
+        .find(a => a.getAttribute("href") != "#")?.getAttribute("href") ?? ""
 
       return playerId;
     };
