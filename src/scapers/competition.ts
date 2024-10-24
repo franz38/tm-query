@@ -41,7 +41,10 @@ export class CompetitionResource implements Scrapable {
 
 export const scrapeCompetition = async (competitionId: string, season?: string): Promise<CompetitionData> => {
 
-    const res = await fetch(`https://www.transfermarkt.com${competitionId}`);
+    const seasonParam = season ? `/saison_id/${season}` : ""
+    const url = `https://www.transfermarkt.com${competitionId}${seasonParam}`
+    
+    const res = await fetch(url);
     const soup = await res.text();
     const root = parse(soup);
 

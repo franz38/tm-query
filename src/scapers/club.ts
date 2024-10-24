@@ -49,8 +49,8 @@ export class ClubResource implements Scrapable{
 
 export const scrapeClub = async (clubId: string, season?: string): Promise<ClubData> => {
     
-    const seasonQuery = season ? `/plus/0/galerie/0?saison_id=${season}` : ""
-    const url = `https://www.transfermarkt.com${clubId}${seasonQuery}`
+    const seasonParam = season ? `/plus/0/galerie/0?saison_id=${season}` : ""
+    const url = `https://www.transfermarkt.com${clubId}${seasonParam}`
 
     const res = await fetch(url);
     const soup = await res.text();
