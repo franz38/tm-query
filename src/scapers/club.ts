@@ -1,6 +1,7 @@
 import { PlayerResource } from "./player";
 import {parse, HTMLElement} from "node-html-parser";
 import { Scrapable } from "./resource";
+import { Scaper } from "./scraper";
 
 
 export interface ClubData {
@@ -26,7 +27,7 @@ export class ClubResource implements Scrapable{
   }
 
   async scrape(season?: string) {
-    this.data = await scrapeClub(this.id, season)
+    this.data = await Scaper.getInstance().scrapeClub(this.id, season)
     this.scraped = true;
   }
 

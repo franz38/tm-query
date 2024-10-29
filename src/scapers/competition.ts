@@ -2,6 +2,7 @@ import {parse, HTMLElement} from "node-html-parser";
 import { getBox } from "../utils/getBox";
 import { Scrapable } from "./resource";
 import { getHeadInfo } from "../utils/getHeadInfo";
+import { Scaper } from "./scraper";
 
 
 export interface CompetitionData {
@@ -31,11 +32,10 @@ export class CompetitionResource implements Scrapable {
     }
 
     async scrape(season?: string): Promise<void> {
-        this.data = await scrapeCompetition(this.id, season)
+        this.data = await Scaper.getInstance().scrapeCompetition(this.id, season)
         this.scraped = true
     }
 
-  
 }
 
 
@@ -43,7 +43,7 @@ export const scrapeCompetition = async (competitionId: string, season?: string):
 
     const seasonParam = season ? `/saison_id/${season}` : ""
     const url = `https://www.transfermarkt.com${competitionId}${seasonParam}`
-    
+
     const res = await fetch(url);
     const soup = await res.text();
     const root = parse(soup);

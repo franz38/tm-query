@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { TMQuery } from "../../src/query";
+import { TMQuery } from "../src/query";
 
 
 test('search "barcelona"', async () => {
@@ -27,7 +27,7 @@ test('search "juventus" and get players from 1985', async () => {
     "Aldo Dolcetti, Oct 23, 1966 (58), Italy, Italy, Midfield, Retired, /aldo-dolcetti/profil/spieler/226443"
   );
   expect(players.split("\n").length).toBe(21);
-});
+}, {timeout: 30000});
 
 test('search "eden hazard"', async () => {
   const player = await TMQuery.searchPlayer("hazard").getCsv();
@@ -62,3 +62,24 @@ test("search hazard and get list of clubs he played for", async () => {
     "Chelsea FC, 29, 24.1, 19, 16, Stamford Bridge"
   );
 });
+
+test('count all seria a players (season 00/01)', async () => {
+    const n = await TMQuery.searchCompetition("serie a")
+        .getClubs("2000")
+        .getPlayers()
+        .count()
+    expect(n).toBe(720)
+}, {timeout: 30000})
+
+test('search player and get his market values', async () => {
+    const mvs = await TMQuery.searchPlayer("de roon").getMarketValueCSV();
+    expect(mvs.split("\n")[0]).toBe(
+        "playerName, mv, date, age, club, playerId"
+    )
+    expect(mvs.split("\n")[1]).toBe(
+        "Marten de Roon, €50k, Mar 28, 2010, 18, Sparta Rotterdam U19, /marten-de-roon/profil/spieler/133179"
+    )
+    expect(mvs.split("\n")[15]).toBe(
+        "Marten de Roon, €10.00m, Aug 1, 2016, 25, Middlesbrough FC, /marten-de-roon/profil/spieler/133179"
+    )
+})

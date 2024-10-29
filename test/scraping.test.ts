@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { TMQuery } from "../../src/query";
+import { TMQuery } from "../src/query";
 
 
 test("scrape club base data", async () => {

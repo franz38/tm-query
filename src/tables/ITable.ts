@@ -1,7 +1,8 @@
 
 export interface ITable<R,T> {
-    data: Promise<R[]>,
-    getCsv(): Promise<string>,
+    data: Promise<R[]>
+    getCsv(): Promise<string>
     getId(): Promise<string[]>
     getData(): Promise<T[]>
+    count(): Promise<number>
 }
